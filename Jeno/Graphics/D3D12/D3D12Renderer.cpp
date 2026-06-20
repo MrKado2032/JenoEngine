@@ -16,6 +16,7 @@
 #include "D3D12Material.h"
 #include "D3D12Camera.h"
 #include "D3D12Transform.h"
+#include "D3D12ShaderTypes.h"
 
 namespace Jeno::Graphics::D3D12
 {
@@ -32,8 +33,9 @@ namespace Jeno::Graphics::D3D12
 		m_frames.resize(static_cast<size_t>(Swapchain::kFrameCount));
 
 		// RootSignature
-		CD3DX12_ROOT_PARAMETER1 rootParams[1]{};
+		CD3DX12_ROOT_PARAMETER1 rootParams[2]{};
 		rootParams[0].InitAsConstantBufferView(0, 0, D3D12_ROOT_DESCRIPTOR_FLAG_DATA_STATIC, D3D12_SHADER_VISIBILITY_VERTEX);
+        rootParams[1].InitAsConstantBufferView(1, 0, D3D12_ROOT_DESCRIPTOR_FLAG_DATA_STATIC, D3D12_SHADER_VISIBILITY_VERTEX);
 
 		CD3DX12_VERSIONED_ROOT_SIGNATURE_DESC rootSigDesc{ };
 		rootSigDesc.Init_1_1(_countof(rootParams), rootParams, 0, nullptr, D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT);
@@ -61,7 +63,6 @@ namespace Jeno::Graphics::D3D12
 		psoDesc.InputLayout = { inputElements, _countof(inputElements) };
 
 		JENO_THROW_IF_FAILED(m_device->GetNativeDevice()->CreateGraphicsPipelineState(&psoDesc, IID_PPV_ARGS(&m_pipelineState)));
-
 		
 		m_camera = std::make_unique<Camera>(static_cast<float>(window.GetWidth()), static_cast<float>(window.GetHeight()));
 	}
@@ -106,16 +107,17 @@ namespace Jeno::Graphics::D3D12
 		m_swapchain->Present();
 	}
 
-	void Renderer::DrawMesh(const Mesh& mesh, const Material& material, const Transform& transform)
+	void Renderer::DrawMesh(const Mesh& mesh, const Material& material, const Transform& transform, ConstantBuffer<TransformCB>& consBuffer)
 	{
 		auto& ctx = m_commandListManager->GetGraphicsContext(m_swapchain->GetCurrentBackBufferIdx());
 
 		TransformCB transformCB{};
 		DirectX::XMStoreFloat4x4(&transformCB.mvp, XMMatrixTranspose(transform.GetWorld() * m_camera->GetViewProjMatrix()));
 
-		material.GetTransformCB().Update(transformCB);
+		consBuffer.Update(transformCB);
 
-		ctx.SetConstantBufferView(0, material.GetTransformCB().GetVirtualAddress());
+		ctx.SetConstantBufferView(0, consBuffer.GetVirtualAddress());
+        ctx.SetConstantBufferView(1, material.GetColorCB().GetVirtualAddress());
 
 		ctx.SetPrimitiveToplogy(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 		ctx.SetVertexBufferView(mesh.GetVertView());

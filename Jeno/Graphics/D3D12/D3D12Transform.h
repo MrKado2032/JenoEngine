@@ -5,9 +5,13 @@ namespace Jeno::Graphics::D3D12
 {
 	struct Transform
 	{
+		friend class Renderer;
+
 		DirectX::XMFLOAT3 position{};
 		DirectX::XMFLOAT3 rotation{};
 		DirectX::XMFLOAT3 scale{ 1.0f, 1.0f, 1.0f };
+
+	private:
 
 		DirectX::XMMATRIX GetWorld() const
 		{

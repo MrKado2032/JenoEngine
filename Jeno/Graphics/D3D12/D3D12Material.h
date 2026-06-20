@@ -4,9 +4,9 @@
 
 namespace Jeno::Graphics::D3D12
 {
-	struct TransformCB
+	struct ColorCB
 	{
-		DirectX::XMFLOAT4X4 mvp;
+		DirectX::XMFLOAT4 color;
 	};
 
 	class Material
@@ -17,10 +17,10 @@ namespace Jeno::Graphics::D3D12
 		explicit Material(ID3D12Device* device);
 		~Material() noexcept;
 
-		ConstantBuffer<TransformCB>& GetTransformCB() const { return *m_transformCB; }
+		ConstantBuffer<ColorCB>& GetColorCB() const { return *m_colorCB; }
 
 	private:
-		std::unique_ptr<ConstantBuffer<TransformCB>> m_transformCB;
+		std::unique_ptr<ConstantBuffer<ColorCB>> m_colorCB;
 	};
 
 	class Device;

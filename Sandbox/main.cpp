@@ -18,6 +18,7 @@ private:
     void Start() override
     {
         CreateQuad(100.0f, 100.0f, { .position = {100, 100, 0} });
+        CreateQuad(100.0f, 100.0f, { .position = {300, 100, 0} });
     }
 
     void Update(float dt) override

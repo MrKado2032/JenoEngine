@@ -1,4 +1,6 @@
 #pragma once
+#include "D3D12ConstantBuffer.h"
+#include "D3D12ShaderTypes.h"
 
 namespace Jeno::Core
 {
@@ -8,6 +10,7 @@ namespace Jeno::Core
 namespace Jeno::Graphics::D3D12
 {
 	struct Transform;
+    struct TransformCB;
 
 	class Device;
 	class DescriptorHeapManager;
@@ -24,7 +27,7 @@ namespace Jeno::Graphics::D3D12
 
 		void BeginFrame();
 		void EndFrame();
-		void DrawMesh(const Mesh& mesh, const Material& material, const Transform& transform);
+		void DrawMesh(const Mesh& mesh, const Material& material, const Transform& transform, ConstantBuffer<TransformCB>& consBuffer);
 		void Resize(uint32_t width, uint32_t height);
 
 		Device& GetDevice() const noexcept { return *m_device; }
