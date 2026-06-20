@@ -24,7 +24,7 @@ namespace Jeno::Graphics::D3D12
 
 		void BeginFrame();
 		void EndFrame();
-		// void DrawMesh(const Mesh& mesh, const Material& material, const Transform& transform);
+		void DrawMesh(const Mesh& mesh, const Material& material, const Transform& transform);
 		void Resize(uint32_t width, uint32_t height);
 
 		Device& GetDevice() const noexcept { return *m_device; }
@@ -42,9 +42,9 @@ namespace Jeno::Graphics::D3D12
 
 		std::vector<FrameContext> m_frames;
 
-		// Microsoft::WRL::ComPtr<ID3D12RootSignature> m_rootSignature;
-		// Microsoft::WRL::ComPtr<ID3D12PipelineState> m_pipelineState;
+		Microsoft::WRL::ComPtr<ID3D12RootSignature> m_rootSignature;
+		Microsoft::WRL::ComPtr<ID3D12PipelineState> m_pipelineState;
 
-		// std::unique_ptr<Camera> m_camera;
+		std::unique_ptr<Camera> m_camera;
 	};
 }
