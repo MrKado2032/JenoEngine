@@ -1,6 +1,11 @@
 #pragma once
 #include <memory>
 
+namespace Jeno::Graphics::D3D12
+{
+	class Renderer;
+}
+
 namespace Jeno::Core
 {
     class Window;
@@ -24,5 +29,6 @@ namespace Jeno::Core
 
 	private:
 		std::unique_ptr<Window> m_window;
+		std::unique_ptr<Graphics::D3D12::Renderer> m_renderer;
 	};
 }
