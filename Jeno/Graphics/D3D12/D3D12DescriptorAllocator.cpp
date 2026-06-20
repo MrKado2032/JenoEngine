@@ -30,14 +30,14 @@ namespace Jeno::Graphics::D3D12
 		const auto offset = static_cast<SIZE_T>(index) * m_descriptorHeap.GetDescriptorSize();
 
 		DescriptorHandle handle{};
-		handle.cpuHandle.ptr = startCpuHandle.ptr + offset;
+		handle.m_cpuHandle.ptr = startCpuHandle.ptr + offset;
 
-		handle.gpuHandle.ptr = 0;
+		handle.m_gpuHandle.ptr = 0;
 		if (m_descriptorHeap.IsShaderVisible())
 		{
 			const auto startGpuHandle = m_descriptorHeap.GetGPUStartHandle();
 			const auto gpuOffset = static_cast<UINT64>(index) * m_descriptorHeap.GetDescriptorSize();
-			handle.gpuHandle.ptr = startGpuHandle.ptr + gpuOffset;
+			handle.m_gpuHandle.ptr = startGpuHandle.ptr + gpuOffset;
 		}
 
 		handle.index = index;

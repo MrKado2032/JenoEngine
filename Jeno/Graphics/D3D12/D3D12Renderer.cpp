@@ -87,8 +87,8 @@ namespace Jeno::Graphics::D3D12
 		ctx.SetRootSignature(m_rootSignature.Get());
 		ctx.SetPipeline(m_pipelineState.Get());
 		
-		ctx.SetRenderTarget(backBufferResource.handle.cpuHandle);
-		ctx.ClearRenderTarget(backBufferResource.handle.cpuHandle);
+		ctx.SetRenderTarget(backBufferResource.handle.GetCPUHandle());
+		ctx.ClearRenderTarget(backBufferResource.handle.GetCPUHandle());
 	}
 
 	void Renderer::EndFrame()

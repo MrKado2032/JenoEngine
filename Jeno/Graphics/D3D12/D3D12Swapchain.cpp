@@ -71,7 +71,7 @@ namespace Jeno::Graphics::D3D12
 			m_frames[i].handle = rtvAllocator.Allocate();
 
 			JENO_THROW_IF_FAILED(m_swapchain->GetBuffer(i, IID_PPV_ARGS(&m_frames[i].resource)));
-			ptrDevice->CreateRenderTargetView(m_frames[i].resource.Get(), nullptr, m_frames[i].handle.cpuHandle);
+			ptrDevice->CreateRenderTargetView(m_frames[i].resource.Get(), nullptr, m_frames[i].handle.GetCPUHandle());
 		}
 	}
 }
