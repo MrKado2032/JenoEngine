@@ -3,6 +3,8 @@
 
 #include "Graphics/D3D12/D3D12Renderer.h"
 
+#include "Graphics/D3D12/RenderObject.h"
+
 namespace Jeno::Core 
 {
     Application::Application()
@@ -13,7 +15,9 @@ namespace Jeno::Core
 
     Application::~Application() noexcept
     {
-
+		m_renderObjects.clear();
+		m_renderer.reset();
+		m_window.reset();
     }
 
     void Application::Run()
@@ -28,7 +32,27 @@ namespace Jeno::Core
             }
 
             m_renderer->BeginFrame();
+            Update(1);
+            for (uint32_t i = 0; auto& obj : m_renderObjects)
+			{
+				m_renderer->DrawMesh(obj.mesh, obj.material, obj.transform);
+			}
             m_renderer->EndFrame();
         }
     }
+
+    void Application::CreateQuad(float width, float height, const Graphics::D3D12::Transform& transform)
+	{
+		Graphics::D3D12::Mesh addMesh(m_renderer->GetDevice(), Graphics::D3D12::PrimitiveGeometryFactory::CreateQuad(width, height, { 0.5f, 0.5f }));
+		Graphics::D3D12::Material addMaterial(Graphics::D3D12::PrimitiveMaterialFactory::CreateDefault(m_renderer->GetDevice()));
+
+		Graphics::D3D12::RenderObject renObj
+		{
+			.mesh = std::move(addMesh),
+			.material = std::move(addMaterial),
+			.transform = transform
+		};
+
+		m_renderObjects.push_back(std::move(renObj));
+	}
 }
