@@ -19,6 +19,7 @@
 #include "D3D12DescriptorHeap.h"
 #include "D3D12PipelineLayout.h"
 #include "D3D12Pipeline.h"
+#include "D3D12SpriteRenderer.h"
 
 namespace Jeno::Graphics::D3D12
 {
@@ -48,9 +49,11 @@ namespace Jeno::Graphics::D3D12
 		m_pipeline = std::make_unique<Pipeline>(m_device->GetNativeDevice(), pipelineCI);
 		
 		m_camera = std::make_unique<Camera>(window.GetWidth(), window.GetHeight());
-
+		
 		// Sample Texture
 		m_defaultTexHandle = m_textureManager->LoadTexture(L"Assets/textures/jeno-white.png");
+
+		m_spriteRenderer = std::make_unique<SpriteRenderer>(*this);
 	}
 
 	Renderer::~Renderer() noexcept

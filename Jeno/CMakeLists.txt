@@ -25,6 +25,8 @@ add_library(Jeno STATIC
     Graphics/D3D12/D3D12PipelineLayout.cpp
     Graphics/D3D12/D3D12Pipeline.h
     Graphics/D3D12/D3D12Pipeline.cpp
+    Graphics/D3D12/D3D12SpriteRenderer.h
+    Graphics/D3D12/D3D12SpriteRenderer.cpp
     )
 
 # JenoはC++20を使う

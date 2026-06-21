@@ -9,6 +9,7 @@ namespace Jeno::Graphics::D3D12
     {
         TextureResource resource{};
         uint32_t generation = 0;
+        std::wstring path;
         bool alive = false;
     };
 

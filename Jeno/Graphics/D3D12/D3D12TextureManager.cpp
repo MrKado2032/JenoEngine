@@ -52,10 +52,12 @@ namespace Jeno::Graphics::D3D12
         handle.generation = slot.generation;
 
         TextureResource texResource{};
-        texResource.descriptorHandle = m_descriptorHeapMgr.GetSRVAllocator().Allocate();
         texResource.generation = handle.generation;
 
         try {
+
+            texResource.descriptorHandle = m_descriptorHeapMgr.GetSRVAllocator().Allocate();
+
             const auto device = m_device.GetNativeDevice();
 
             // --- Wait while the texture is loaded and the buffer is copied.
@@ -102,6 +104,7 @@ namespace Jeno::Graphics::D3D12
 
             slot.resource = std::move(texResource);
             slot.alive = true;
+            slot.path = filePath;
 
             m_textureHandleCaches.try_emplace(filePath, handle);
 
@@ -126,6 +129,12 @@ namespace Jeno::Graphics::D3D12
             return;
         }
 
+        if (handle.index >= m_textures.size())
+        {
+            handle.Reset();
+            return;
+        }
+
         auto& slot = m_textures[handle.index];
         if(!slot.alive || slot.generation != handle.generation)
         {
@@ -133,10 +142,13 @@ namespace Jeno::Graphics::D3D12
             return;
         }
 
+        m_textureHandleCaches.erase(slot.path);
+
         m_descriptorHeapMgr.GetSRVAllocator().Free(slot.resource.descriptorHandle);
 
         slot.resource = {};
         slot.alive = false;
+        slot.path = L"";
         ++slot.generation;
 
         m_freeList.push_back(handle.index);

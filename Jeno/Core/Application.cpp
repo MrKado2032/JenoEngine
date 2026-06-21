@@ -2,6 +2,7 @@
 #include "Window.h"
 
 #include "Graphics/D3D12/D3D12Renderer.h"
+#include "Graphics/D3D12/D3D12SpriteRenderer.h"
 
 #include "Graphics/D3D12/RenderObject.h"
 #include "Graphics/D3D12/D3D12Device.h"
@@ -54,7 +55,7 @@ namespace Jeno::Core
             Update(1);
             for (auto& obj : m_renderObjects)
 			{
-				m_renderer->DrawMesh(obj.mesh, obj.material, obj.transform, *obj.transformCB);
+				m_renderer->GetSpriteRenderer().Draw(obj.material, obj.transform, *obj.transformCB);
 			}
             m_renderer->EndFrame();
         }
@@ -62,18 +63,18 @@ namespace Jeno::Core
 
     void Application::CreateQuad(float width, float height, const Graphics::D3D12::Transform& transform)
 	{
-		Graphics::D3D12::Mesh addMesh(m_renderer->GetDevice(), Graphics::D3D12::PrimitiveGeometryFactory::CreateQuad(width, height, { 0.5f, 0.5f }));
 		Graphics::D3D12::Material addMaterial(Graphics::D3D12::PrimitiveMaterialFactory::CreateDefault(m_renderer->GetDevice()));
 
         addMaterial.AttachTextureHandle(m_renderer->GetTextureManager().LoadTexture(L"Assets/textures/test.png"));
 
+        auto fixedTransform = transform;
+        fixedTransform.scale = { width, height, 1.0f };
         Graphics::D3D12::TransformCB transformCB{};
 
 		Graphics::D3D12::RenderObject renObj
 		{
-			.mesh = std::move(addMesh),
 			.material = std::move(addMaterial),
-			.transform = transform,
+			.transform = fixedTransform,
             .transformCB = 
                 std::make_unique<Graphics::D3D12::ConstantBuffer<Graphics::D3D12::TransformCB>>(m_renderer->GetDevice().GetNativeDevice(), transformCB)
 		};
