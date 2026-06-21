@@ -33,5 +33,7 @@ namespace Jeno::Graphics::D3D12
 
         std::vector<TextureSlot> m_textures;
         std::vector<uint32_t> m_freeList;
+
+        std::unordered_map<std::wstring, TextureHandle> m_textureHandleCaches;
     };
 }
