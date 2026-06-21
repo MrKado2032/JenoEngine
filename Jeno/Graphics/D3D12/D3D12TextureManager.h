@@ -31,7 +31,6 @@ namespace Jeno::Graphics::D3D12
         DescriptorHeapManager& m_descriptorHeapMgr;
         const Device& m_device;
 
-        std::unordered_map<uint32_t, TextureResource> m_textureResources;
         std::vector<TextureSlot> m_textures;
         std::vector<uint32_t> m_freeList;
     };
