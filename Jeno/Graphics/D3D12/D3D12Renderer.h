@@ -23,6 +23,7 @@ namespace Jeno::Graphics::D3D12
 	class Camera;
 	class PipelineLayout;
 	class Pipeline;
+	class SpriteRenderer;
 	class Renderer
 	{
 	public:
@@ -36,6 +37,7 @@ namespace Jeno::Graphics::D3D12
 
 		Device& GetDevice() const noexcept { return *m_device; }
 		TextureManager& GetTextureManager() const noexcept { return *m_textureManager; }
+		SpriteRenderer& GetSpriteRenderer() const noexcept { return *m_spriteRenderer; }
 
 	private:
 		struct FrameContext
@@ -54,6 +56,8 @@ namespace Jeno::Graphics::D3D12
 		std::unique_ptr<Camera> m_camera;
 		std::unique_ptr<PipelineLayout> m_pipelineLayout;
 		std::unique_ptr<Pipeline> m_pipeline;
+
+		std::unique_ptr<SpriteRenderer> m_spriteRenderer;
 		
 		TextureHandle m_defaultTexHandle{};
 	};
