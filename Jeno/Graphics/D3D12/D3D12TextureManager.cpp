@@ -25,6 +25,13 @@ namespace Jeno::Graphics::D3D12
 
     TextureHandle TextureManager::LoadTexture(std::wstring_view path)
     {
+        const std::wstring filePath(path);
+        auto it = m_textureHandleCaches.find(filePath);
+        if(it != m_textureHandleCaches.end())
+        {
+            return it->second;
+        }
+
         uint32_t index;
 
         if(!m_freeList.empty())
@@ -52,8 +59,6 @@ namespace Jeno::Graphics::D3D12
             const auto device = m_device.GetNativeDevice();
 
             // --- Wait while the texture is loaded and the buffer is copied.
-
-            const std::wstring filePath(path);
 
             DirectX::ResourceUploadBatch uploadBatch(device);
             uploadBatch.Begin();
@@ -97,6 +102,8 @@ namespace Jeno::Graphics::D3D12
 
             slot.resource = std::move(texResource);
             slot.alive = true;
+
+            m_textureHandleCaches.try_emplace(filePath, handle);
 
             return handle;
         
