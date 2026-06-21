@@ -2,6 +2,7 @@
 
 #include "D3D12Common.h"
 #include "D3D12CommandQueue.h"
+#include <d3d12.h>
 
 namespace Jeno::Graphics::D3D12
 {
@@ -53,6 +54,17 @@ namespace Jeno::Graphics::D3D12
 		Reset();
 
 		return *this;
+	}
+
+	void CommandContext::SetGraphicsRootDescriptorTable(uint32_t rootParamIndex, D3D12_GPU_DESCRIPTOR_HANDLE gpuHandle)
+	{
+		m_cmdList->SetGraphicsRootDescriptorTable(rootParamIndex, gpuHandle);
+	}
+
+	void CommandContext::SetDescriptorHeap(ID3D12DescriptorHeap* heap)
+	{
+		ID3D12DescriptorHeap* heaps[] = { heap };
+		m_cmdList->SetDescriptorHeaps(1, heaps);
 	}
 
 	void CommandContext::TransitionBarrier(ID3D12Resource* res, D3D12_RESOURCE_STATES beforeState, D3D12_RESOURCE_STATES afterState)

@@ -6,6 +6,6 @@ namespace Jeno::Graphics::D3D12
 	struct Vertex
 	{
 		DirectX::XMFLOAT3 pos;
-		DirectX::XMFLOAT4 col;
+		DirectX::XMFLOAT2 uv;
 	};
 }

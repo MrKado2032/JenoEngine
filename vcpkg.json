@@ -1,0 +1,6 @@
+{
+  "dependencies": [
+    "directxtk12",
+    "directx-dxc"
+  ]
+}

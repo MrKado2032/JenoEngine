@@ -14,6 +14,7 @@ namespace Jeno::Graphics::D3D12
 		DescriptorHeap(DescriptorHeap&& other) noexcept = delete;
 		DescriptorHeap& operator=(DescriptorHeap&& other) noexcept = delete;
 
+		[[nodiscard]] ID3D12DescriptorHeap* Get() const { return m_descriptorHeap.Get(); }
 		[[nodiscard]] D3D12_CPU_DESCRIPTOR_HANDLE GetCPUStartHandle() const { return m_descriptorHeap->GetCPUDescriptorHandleForHeapStart(); }
 		[[nodiscard]] D3D12_GPU_DESCRIPTOR_HANDLE GetGPUStartHandle() const { return m_descriptorHeap->GetGPUDescriptorHandleForHeapStart(); }
 		[[nodiscard]] uint32_t GetDescriptorSize() const noexcept { return m_descriptorSize; }

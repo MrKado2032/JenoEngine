@@ -19,6 +19,8 @@ add_library(Jeno STATIC
     Graphics/D3D12/D3D12Mesh.cpp
     Graphics/D3D12/D3D12Camera.cpp
     Graphics/D3D12/D3D12Material.cpp
+    Graphics/D3D12/D3D12TextureManager.cpp
+    Graphics/D3D12/D3D12Texture.h
     )
 
 # JenoはC++20を使う
@@ -30,4 +32,6 @@ target_include_directories(Jeno PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 # PrecompiledHeader 
 target_precompile_headers(Jeno PRIVATE PrecompiledHeader.h)
 
-target_link_libraries(Jeno PUBLIC glfw d3d12 dxgi)
+find_package(directxtk12 CONFIG REQUIRED)
+
+target_link_libraries(Jeno PUBLIC Microsoft::DirectXTK12 glfw d3d12 dxgi)

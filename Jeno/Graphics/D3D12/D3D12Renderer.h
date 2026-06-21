@@ -1,6 +1,7 @@
 #pragma once
 #include "D3D12ConstantBuffer.h"
 #include "D3D12ShaderTypes.h"
+#include "D3D12Texture.h"
 
 namespace Jeno::Core
 {
@@ -15,6 +16,7 @@ namespace Jeno::Graphics::D3D12
 	class Device;
 	class DescriptorHeapManager;
 	class CommandListManager;
+	class TextureManager;
 	class Swapchain;
 	class Mesh;
 	class Material;
@@ -31,6 +33,7 @@ namespace Jeno::Graphics::D3D12
 		void Resize(uint32_t width, uint32_t height);
 
 		Device& GetDevice() const noexcept { return *m_device; }
+		TextureManager& GetTextureManager() const noexcept { return *m_textureManager; }
 
 	private:
 		struct FrameContext
@@ -41,6 +44,7 @@ namespace Jeno::Graphics::D3D12
 		std::unique_ptr<Device> m_device;
 		std::unique_ptr<DescriptorHeapManager> m_descriptorHeapManager;
 		std::unique_ptr<CommandListManager> m_commandListManager;
+		std::unique_ptr<TextureManager> m_textureManager;
 		std::unique_ptr<Swapchain> m_swapchain;
 
 		std::vector<FrameContext> m_frames;
@@ -49,5 +53,7 @@ namespace Jeno::Graphics::D3D12
 		Microsoft::WRL::ComPtr<ID3D12PipelineState> m_pipelineState;
 
 		std::unique_ptr<Camera> m_camera;
+
+		TextureHandle m_defaultTexHandle{};
 	};
 }
