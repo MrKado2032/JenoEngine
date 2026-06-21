@@ -17,10 +17,10 @@ namespace Jeno::Graphics::D3D12
 
 		geometry.vertices =
 		{
-			{{left,  top,    0.0f}, {1, 0, 0, 1}},
-			{{right, top,    0.0f}, {0, 1, 0, 1}},
-			{{right, bottom, 0.0f}, {0, 0, 1, 1}},
-			{{left,  bottom, 0.0f}, {1, 1, 1, 1}},
+			{{left,  top,    0.0f}, {0, 0}},
+			{{right, top,    0.0f}, {1, 0}},
+			{{right, bottom, 0.0f}, {1, 1}},
+			{{left,  bottom, 0.0f}, {0, 1}},
 		};
 
 		geometry.indices =

@@ -16,11 +16,17 @@ namespace Jeno::Graphics::D3D12
 		DescriptorHeapManager(DescriptorHeapManager&&) noexcept = delete;
 		DescriptorHeapManager& operator=(DescriptorHeapManager&&) noexcept = delete;
 
+		DescriptorHeap& GetSRVHeap() const { return *m_srvHeap; }
+
 		DescriptorAllocator& GetRTVAllocator() const { return *m_rtvAllocator; }
+		DescriptorAllocator& GetSRVAllocator() const { return *m_srvAllocator; }
 
 	private:
 		std::unique_ptr<DescriptorHeap> m_rtvHeap;
 		std::unique_ptr<DescriptorAllocator> m_rtvAllocator;
+
+		std::unique_ptr<DescriptorHeap> m_srvHeap;
+		std::unique_ptr<DescriptorAllocator> m_srvAllocator;
 
 	};
 }

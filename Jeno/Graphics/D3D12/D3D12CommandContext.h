@@ -31,6 +31,8 @@ namespace Jeno::Graphics::D3D12
 		void SetVertexBufferView(const D3D12_VERTEX_BUFFER_VIEW& vertView);
 		void SetIndexBufferView(const D3D12_INDEX_BUFFER_VIEW& indexView);
 		void SetConstantBufferView(uint32_t rootParamIndex, D3D12_GPU_VIRTUAL_ADDRESS address);
+		void SetGraphicsRootDescriptorTable(uint32_t rootParamIndex, D3D12_GPU_DESCRIPTOR_HANDLE gpuHandle);
+		void SetDescriptorHeap(ID3D12DescriptorHeap* heap);
 		void SetRenderTarget(const D3D12_CPU_DESCRIPTOR_HANDLE& cpuHandle);
 		void ClearRenderTarget(const D3D12_CPU_DESCRIPTOR_HANDLE& cpuHandle);
 		void DrawIndexed(uint32_t indexCount, uint32_t instanceCount);

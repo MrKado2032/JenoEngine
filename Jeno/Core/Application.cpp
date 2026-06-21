@@ -5,11 +5,19 @@
 
 #include "Graphics/D3D12/RenderObject.h"
 #include "Graphics/D3D12/D3D12Device.h"
+#include "Graphics/D3D12/D3D12TextureManager.h"
 
 namespace Jeno::Core 
 {
     Application::Application()
     {
+        HRESULT hr = CoInitializeEx(nullptr, COINIT_MULTITHREADED);
+
+        if (FAILED(hr) && hr != RPC_E_CHANGED_MODE)
+        {
+            throw;
+        }
+
         m_window = std::make_unique<Window>(1280, 720, "Jeno Engine");
         m_renderer = std::make_unique<Graphics::D3D12::Renderer>(*m_window);
     }
@@ -19,6 +27,8 @@ namespace Jeno::Core
         m_renderer.reset();
 		m_renderObjects.clear();
 		m_window.reset();
+
+        CoUninitialize();
     }
 
     void Application::Run()
@@ -54,6 +64,8 @@ namespace Jeno::Core
 	{
 		Graphics::D3D12::Mesh addMesh(m_renderer->GetDevice(), Graphics::D3D12::PrimitiveGeometryFactory::CreateQuad(width, height, { 0.5f, 0.5f }));
 		Graphics::D3D12::Material addMaterial(Graphics::D3D12::PrimitiveMaterialFactory::CreateDefault(m_renderer->GetDevice()));
+
+        addMaterial.AttachTextureHandle(m_renderer->GetTextureManager().LoadTexture(L"Assets/textures/test.png"));
 
         Graphics::D3D12::TransformCB transformCB{};
 
