@@ -10,8 +10,6 @@
 
 #include "Core/ShaderCompiler.h"
 
-#include "D3D12Helper.h"
-
 #include "D3D12Mesh.h"
 #include "D3D12Material.h"
 #include "D3D12Camera.h"
@@ -19,7 +17,8 @@
 #include "D3D12Transform.h"
 #include "D3D12ShaderTypes.h"
 #include "D3D12DescriptorHeap.h"
-#include <d3d12.h>
+#include "D3D12PipelineLayout.h"
+#include "D3D12Pipeline.h"
 
 namespace Jeno::Graphics::D3D12
 {
@@ -38,43 +37,15 @@ namespace Jeno::Graphics::D3D12
 		m_frames.resize(static_cast<size_t>(Swapchain::kFrameCount));
 
 		// RootSignature
-		CD3DX12_DESCRIPTOR_RANGE1 ranges[1]{};
-		ranges[0].Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 0, 0, D3D12_DESCRIPTOR_RANGE_FLAG_DATA_VOLATILE);
-
-		CD3DX12_ROOT_PARAMETER1 rootParams[3]{};
-		rootParams[0].InitAsConstantBufferView(0, 0, D3D12_ROOT_DESCRIPTOR_FLAG_DATA_VOLATILE, D3D12_SHADER_VISIBILITY_VERTEX);
-        rootParams[1].InitAsConstantBufferView(1, 0, D3D12_ROOT_DESCRIPTOR_FLAG_DATA_VOLATILE, D3D12_SHADER_VISIBILITY_PIXEL);
-		rootParams[2].InitAsDescriptorTable(_countof(ranges), ranges, D3D12_SHADER_VISIBILITY_PIXEL);
-
-		CD3DX12_STATIC_SAMPLER_DESC samplerDescs[1]{};
-		samplerDescs[0].Init(0, D3D12_FILTER_MIN_MAG_MIP_LINEAR);
-
-		CD3DX12_VERSIONED_ROOT_SIGNATURE_DESC rootSigDesc{ };
-		rootSigDesc.Init_1_1(_countof(rootParams), rootParams, _countof(samplerDescs), samplerDescs, D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT);
-
-		Microsoft::WRL::ComPtr<ID3DBlob> rootsig, error;
-		JENO_THROW_IF_FAILED(D3DX12SerializeVersionedRootSignature(&rootSigDesc, D3D_ROOT_SIGNATURE_VERSION_1_1, &rootsig, &error));
-		JENO_THROW_IF_FAILED(m_device->GetNativeDevice()->CreateRootSignature(0, rootsig->GetBufferPointer(), rootsig->GetBufferSize(), IID_PPV_ARGS(&m_rootSignature)));
-
-		D3D12_INPUT_ELEMENT_DESC inputElements[] =
-		{
-			{"POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, D3D12_APPEND_ALIGNED_ELEMENT, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0},
-			{"TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, D3D12_APPEND_ALIGNED_ELEMENT, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0},
-		};
-
+		m_pipelineLayout = std::make_unique<PipelineLayout>(m_device->GetNativeDevice());
+		
 		// Shader Compile
 		auto shaderSet = Core::ShaderCompiler::Compile("Assets/Shaders/Basic2DVS.cso", "Assets/Shaders/Basic2DPS.cso");
 
 		// PSO
-		D3D12_GRAPHICS_PIPELINE_STATE_DESC psoDesc = Helper::CreateDefault2DDesc();
-		psoDesc.pRootSignature = m_rootSignature.Get();
-		psoDesc.VS.BytecodeLength = shaderSet.vs.size();
-		psoDesc.VS.pShaderBytecode = shaderSet.vs.data();
-		psoDesc.PS.BytecodeLength = shaderSet.ps.size();
-		psoDesc.PS.pShaderBytecode = shaderSet.ps.data();
-		psoDesc.InputLayout = { inputElements, _countof(inputElements) };
+		PipelineCreateInfo pipelineCI{.pipelineLayout = *m_pipelineLayout, .shader = shaderSet};
 
-		JENO_THROW_IF_FAILED(m_device->GetNativeDevice()->CreateGraphicsPipelineState(&psoDesc, IID_PPV_ARGS(&m_pipelineState)));
+		m_pipeline = std::make_unique<Pipeline>(m_device->GetNativeDevice(), pipelineCI);
 		
 		m_camera = std::make_unique<Camera>(window.GetWidth(), window.GetHeight());
 
@@ -100,8 +71,8 @@ namespace Jeno::Graphics::D3D12
 		ctx.SetViewPort(CD3DX12_VIEWPORT({ 0, 0, static_cast<FLOAT>(m_swapchain->GetCurrentWidth()), static_cast<FLOAT>(m_swapchain->GetCurrentHeight()) }));
 		ctx.SetScissor(CD3DX12_RECT(0, 0, static_cast<LONG>(m_swapchain->GetCurrentWidth()), static_cast<LONG>(m_swapchain->GetCurrentHeight())));
 
-		ctx.SetRootSignature(m_rootSignature.Get());
-		ctx.SetPipeline(m_pipelineState.Get());
+		ctx.SetRootSignature(m_pipelineLayout->Get());
+		ctx.SetPipeline(m_pipeline->Get());
 		
 		ctx.SetRenderTarget(backBufferResource.handle.GetCPUHandle());
 		ctx.ClearRenderTarget(backBufferResource.handle.GetCPUHandle());

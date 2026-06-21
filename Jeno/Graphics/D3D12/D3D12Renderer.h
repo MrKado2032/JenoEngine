@@ -21,6 +21,8 @@ namespace Jeno::Graphics::D3D12
 	class Mesh;
 	class Material;
 	class Camera;
+	class PipelineLayout;
+	class Pipeline;
 	class Renderer
 	{
 	public:
@@ -49,11 +51,10 @@ namespace Jeno::Graphics::D3D12
 
 		std::vector<FrameContext> m_frames;
 
-		Microsoft::WRL::ComPtr<ID3D12RootSignature> m_rootSignature;
-		Microsoft::WRL::ComPtr<ID3D12PipelineState> m_pipelineState;
-
 		std::unique_ptr<Camera> m_camera;
-
+		std::unique_ptr<PipelineLayout> m_pipelineLayout;
+		std::unique_ptr<Pipeline> m_pipeline;
+		
 		TextureHandle m_defaultTexHandle{};
 	};
 }
